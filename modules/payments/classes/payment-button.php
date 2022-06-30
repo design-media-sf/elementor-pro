@@ -1,17 +1,21 @@
 <?php
 namespace ElementorPro\Modules\Payments\Classes;
 
+use Elementor\Utils;
+use Elementor\Widget_Base;
 use Elementor\Controls_Manager;
 use Elementor\Core\Kits\Documents\Tabs\Global_Typography;
 use Elementor\Group_Control_Typography;
 use Elementor\Modules\DynamicTags\Module as TagsModule;
 use Elementor\Widget_Button;
+use ElementorPro\Base\Base_Widget_Trait;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
 abstract class Payment_Button extends Widget_Button {
+	use Base_Widget_Trait;
 
 	// Payment types.
 	const PAYMENT_TYPE_CHECKOUT = 'checkout';
@@ -41,43 +45,53 @@ abstract class Payment_Button extends Widget_Button {
 	// Custom sandbox controls.
 	abstract protected function register_sandbox_controls();
 
+	public function get_group_name() {
+		return 'payments';
+	}
+
 	// Render custom controls after product type.
 	protected function after_product_type() { }
+
+	// Render custom controls test toggle control.
+	protected function after_custom_messages_toggle() { }
+
+	// Edit error massage placeholders for stripe widget
+	protected function update_error_massages() { }
 
 	// Return an array of supported currencies.
 	protected function get_currencies() {
 		return [
-			'AUD' => _x( 'Australian Dollar', 'Currency', 'elementor-pro' ),
-			'CAD' => _x( 'Canadian Dollar', 'Currency', 'elementor-pro' ),
-			'CZK' => _x( 'Czech Koruna', 'Currency', 'elementor-pro' ),
-			'DKK' => _x( 'Danish Krone', 'Currency', 'elementor-pro' ),
-			'EUR' => _x( 'European Euro', 'Currency', 'elementor-pro' ),
-			'HKD' => _x( 'Hong Kong Dollar', 'Currency', 'elementor-pro' ),
-			'HUF' => _x( 'Hungarian Forint', 'Currency', 'elementor-pro' ),
-			'ILS' => _x( 'Israeli New Sheqel', 'Currency', 'elementor-pro' ),
-			'JPY' => _x( 'Japanese Yen', 'Currency', 'elementor-pro' ),
-			'MXN' => _x( 'Mexican Peso', 'Currency', 'elementor-pro' ),
-			'NOK' => _x( 'Norwegian Krone', 'Currency', 'elementor-pro' ),
-			'NZD' => _x( 'New Zealand Dollar', 'Currency', 'elementor-pro' ),
-			'PHP' => _x( 'Philippine Peso', 'Currency', 'elementor-pro' ),
-			'PLN' => _x( 'Polish Zloty', 'Currency', 'elementor-pro' ),
+			'AUD' => _x( 'AUD', 'Currency', 'elementor-pro' ),
+			'CAD' => _x( 'CAD', 'Currency', 'elementor-pro' ),
+			'CZK' => _x( 'CZK', 'Currency', 'elementor-pro' ),
+			'DKK' => _x( 'DKK', 'Currency', 'elementor-pro' ),
+			'EUR' => _x( 'EUR', 'Currency', 'elementor-pro' ),
+			'HKD' => _x( 'HKD', 'Currency', 'elementor-pro' ),
+			'HUF' => _x( 'HUF', 'Currency', 'elementor-pro' ),
+			'ILS' => _x( 'ILS', 'Currency', 'elementor-pro' ),
+			'JPY' => _x( 'JPY', 'Currency', 'elementor-pro' ),
+			'MXN' => _x( 'MXN', 'Currency', 'elementor-pro' ),
+			'NOK' => _x( 'NOK', 'Currency', 'elementor-pro' ),
+			'NZD' => _x( 'NZD', 'Currency', 'elementor-pro' ),
+			'PHP' => _x( 'PHP', 'Currency', 'elementor-pro' ),
+			'PLN' => _x( 'PLN', 'Currency', 'elementor-pro' ),
 			'GBP' => _x( 'GBP', 'Currency', 'elementor-pro' ),
-			'RUB' => _x( 'Russian Ruble', 'Currency', 'elementor-pro' ),
-			'SGD' => _x( 'Singapore Dollar', 'Currency', 'elementor-pro' ),
-			'SEK' => _x( 'Swedish Krona', 'Currency', 'elementor-pro' ),
-			'CHF' => _x( 'Swiss Franc', 'Currency', 'elementor-pro' ),
-			'TWD' => _x( 'Taiwan New Dollar', 'Currency', 'elementor-pro' ),
-			'THB' => _x( 'Thai Baht', 'Currency', 'elementor-pro' ),
-			'TRY' => _x( 'Turkish Lira', 'Currency', 'elementor-pro' ),
-			'USD' => _x( 'U.S. Dollar', 'Currency', 'elementor-pro' ),
+			'RUB' => _x( 'RUB', 'Currency', 'elementor-pro' ),
+			'SGD' => _x( 'SGD', 'Currency', 'elementor-pro' ),
+			'SEK' => _x( 'SEK', 'Currency', 'elementor-pro' ),
+			'CHF' => _x( 'CHF', 'Currency', 'elementor-pro' ),
+			'TWD' => _x( 'TWD', 'Currency', 'elementor-pro' ),
+			'THB' => _x( 'THB', 'Currency', 'elementor-pro' ),
+			'TRY' => _x( 'TRY', 'Currency', 'elementor-pro' ),
+			'USD' => _x( 'USD', 'Currency', 'elementor-pro' ),
 		];
 	}
 
 	// Return an array of default error messages.
 	protected function get_default_error_messages() {
 		return [
-			self::ERROR_MESSAGE_GLOBAL => __( 'An error occurred.', 'elementor-pro' ),
-			self::ERROR_MESSAGE_PAYMENT_METHOD => __( 'No payment method connected. Contact seller.', 'elementor-pro' ),
+			self::ERROR_MESSAGE_GLOBAL => esc_html__( 'An error occurred.', 'elementor-pro' ),
+			self::ERROR_MESSAGE_PAYMENT_METHOD => esc_html__( 'No payment method connected. Contact seller.', 'elementor-pro' ),
 		];
 	}
 
@@ -93,21 +107,22 @@ abstract class Payment_Button extends Widget_Button {
 		// Return the default message.
 		$error_messages = $this->get_default_error_messages();
 
-		return ( ! empty( $error_messages[ $id ] ) ) ? $error_messages[ $id ] : __( 'Unknown error.', 'elementor-pro' );
+		return ( ! empty( $error_messages[ $id ] ) ) ? $error_messages[ $id ] : esc_html__( 'Unknown error.', 'elementor-pro' );
 	}
 
 	// Product details section.
 	protected function register_product_controls() {
+
 		$this->add_control(
 			'type',
 			[
-				'label' => __( 'Transaction Type', 'elementor-pro' ),
+				'label' => esc_html__( 'Transaction Type', 'elementor-pro' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => 'checkout',
 				'options' => [
-					self::PAYMENT_TYPE_CHECKOUT => __( 'Checkout', 'elementor-pro' ),
-					self::PAYMENT_TYPE_DONATION => __( 'Donation', 'elementor-pro' ),
-					self::PAYMENT_TYPE_SUBSCRIPTION => __( 'Subscription', 'elementor-pro' ),
+					self::PAYMENT_TYPE_CHECKOUT => esc_html__( 'Checkout', 'elementor-pro' ),
+					self::PAYMENT_TYPE_DONATION => esc_html__( 'Donation', 'elementor-pro' ),
+					self::PAYMENT_TYPE_SUBSCRIPTION => esc_html__( 'Subscription', 'elementor-pro' ),
 				],
 				'separator' => 'before',
 			]
@@ -118,7 +133,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'product_name',
 			[
-				'label' => __( 'Item Name', 'elementor-pro' ),
+				'label' => esc_html__( 'Item Name', 'elementor-pro' ),
 				'type' => Controls_Manager::TEXT,
 				'dynamic' => [
 					'active' => true,
@@ -130,7 +145,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'product_sku',
 			[
-				'label' => __( 'SKU', 'elementor-pro' ),
+				'label' => esc_html__( 'SKU', 'elementor-pro' ),
 				'type' => Controls_Manager::TEXT,
 				'dynamic' => [
 					'active' => true,
@@ -141,7 +156,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'product_price',
 			[
-				'label' => __( 'Price', 'elementor-pro' ),
+				'label' => esc_html__( 'Price', 'elementor-pro' ),
 				'type' => Controls_Manager::NUMBER,
 				'default' => '0.00',
 				'dynamic' => [
@@ -156,12 +171,12 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'donation_type',
 			[
-				'label' => __( 'Donation Amount', 'elementor-pro' ),
+				'label' => esc_html__( 'Donation Amount', 'elementor-pro' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => self::DONATION_TYPE_FIXED,
 				'options' => [
-					self::DONATION_TYPE_ANY => __( 'Any Amount', 'elementor-pro' ),
-					self::DONATION_TYPE_FIXED => __( 'Fixed', 'elementor-pro' ),
+					self::DONATION_TYPE_ANY => esc_html__( 'Any Amount', 'elementor-pro' ),
+					self::DONATION_TYPE_FIXED => esc_html__( 'Fixed', 'elementor-pro' ),
 				],
 				'condition' => [
 					'type' => self::PAYMENT_TYPE_DONATION,
@@ -172,7 +187,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'donation_amount',
 			[
-				'label' => __( 'Amount', 'elementor-pro' ),
+				'label' => esc_html__( 'Amount', 'elementor-pro' ),
 				'type' => Controls_Manager::NUMBER,
 				'default' => '1',
 				'dynamic' => [
@@ -188,7 +203,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'currency',
 			[
-				'label' => __( 'Currency', 'elementor-pro' ),
+				'label' => esc_html__( 'Currency', 'elementor-pro' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => 'USD',
 				'options' => $this->get_currencies(),
@@ -198,14 +213,14 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'billing_cycle',
 			[
-				'label' => __( 'Billing Cycle', 'elementor-pro' ),
+				'label' => esc_html__( 'Billing Cycle', 'elementor-pro' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => self::BILLING_CYCLE_MONTHS,
 				'options' => [
-					self::BILLING_CYCLE_DAYS => __( 'Daily', 'elementor-pro' ),
-					self::BILLING_CYCLE_WEEKS => __( 'Weekly', 'elementor-pro' ),
-					self::BILLING_CYCLE_MONTHS => __( 'Monthly', 'elementor-pro' ),
-					self::BILLING_CYCLE_YEARS => __( 'Yearly', 'elementor-pro' ),
+					self::BILLING_CYCLE_DAYS => esc_html__( 'Daily', 'elementor-pro' ),
+					self::BILLING_CYCLE_WEEKS => esc_html__( 'Weekly', 'elementor-pro' ),
+					self::BILLING_CYCLE_MONTHS => esc_html__( 'Monthly', 'elementor-pro' ),
+					self::BILLING_CYCLE_YEARS => esc_html__( 'Yearly', 'elementor-pro' ),
 				],
 				'condition' => [
 					'type' => self::PAYMENT_TYPE_SUBSCRIPTION,
@@ -217,10 +232,10 @@ abstract class Payment_Button extends Widget_Button {
 			'auto_renewal',
 			[
 				'type' => Controls_Manager::SWITCHER,
-				'label' => __( 'Auto Renewal', 'elementor-pro' ),
+				'label' => esc_html__( 'Auto Renewal', 'elementor-pro' ),
 				'default' => 'yes',
-				'label_off' => __( 'Off', 'elementor-pro' ),
-				'label_on' => __( 'On', 'elementor-pro' ),
+				'label_off' => esc_html__( 'Off', 'elementor-pro' ),
+				'label_on' => esc_html__( 'On', 'elementor-pro' ),
 				'condition' => [
 					'type' => self::PAYMENT_TYPE_SUBSCRIPTION,
 				],
@@ -230,7 +245,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'quantity',
 			[
-				'label' => __( 'Quantity', 'elementor-pro' ),
+				'label' => esc_html__( 'Quantity', 'elementor-pro' ),
 				'type' => Controls_Manager::NUMBER,
 				'default' => 1,
 				'condition' => [
@@ -242,7 +257,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'shipping_price',
 			[
-				'label' => __( 'Shipping Price', 'elementor-pro' ),
+				'label' => esc_html__( 'Shipping Price', 'elementor-pro' ),
 				'type' => Controls_Manager::NUMBER,
 				'default' => 0,
 				'dynamic' => [
@@ -257,12 +272,12 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'tax_type',
 			[
-				'label' => __( 'Tax', 'elementor-pro' ),
+				'label' => esc_html__( 'Tax', 'elementor-pro' ),
 				'type' => Controls_Manager::SELECT,
 				'default' => '',
 				'options' => [
-					'' => __( 'None', 'elementor-pro' ),
-					'percentage' => __( 'Percentage', 'elementor-pro' ),
+					'' => esc_html__( 'None', 'elementor-pro' ),
+					'percentage' => esc_html__( 'Percentage', 'elementor-pro' ),
 				],
 				'condition' => [
 					'type' => self::PAYMENT_TYPE_CHECKOUT,
@@ -273,7 +288,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'tax_rate',
 			[
-				'label' => __( 'Tax Percentage', 'elementor-pro' ),
+				'label' => esc_html__( 'Tax Percentage', 'elementor-pro' ),
 				'type' => Controls_Manager::NUMBER,
 				'default' => '0',
 				'dynamic' => [
@@ -292,17 +307,17 @@ abstract class Payment_Button extends Widget_Button {
 		$this->start_controls_section(
 			'section_settings',
 			[
-				'label' => __( 'Additional Options', 'elementor-pro' ),
+				'label' => esc_html__( 'Additional Options', 'elementor-pro' ),
 			]
 		);
 
 		$this->add_control(
 			'redirect_after_success',
 			[
-				'label' => __( 'Redirect After Success', 'elementor-pro' ),
+				'label' => esc_html__( 'Redirect After Success', 'elementor-pro' ),
 				'type' => Controls_Manager::URL,
 				'options' => false,
-				'placeholder' => __( 'Paste URL or type', 'elementor-pro' ),
+				'placeholder' => esc_html__( 'Choose a page or add a URL', 'elementor-pro' ),
 				'dynamic' => [
 					'active' => true,
 				],
@@ -315,10 +330,10 @@ abstract class Payment_Button extends Widget_Button {
 			'sandbox_mode',
 			[
 				'type' => Controls_Manager::SWITCHER,
-				'label' => __( 'Sandbox', 'elementor-pro' ),
+				'label' => esc_html__( 'Sandbox', 'elementor-pro' ),
 				'default' => 'no',
-				'label_off' => __( 'Off', 'elementor-pro' ),
-				'label_on' => __( 'On', 'elementor-pro' ),
+				'label_off' => esc_html__( 'Off', 'elementor-pro' ),
+				'label_on' => esc_html__( 'On', 'elementor-pro' ),
 			]
 		);
 
@@ -328,28 +343,30 @@ abstract class Payment_Button extends Widget_Button {
 			'open_in_new_window',
 			[
 				'type' => Controls_Manager::SWITCHER,
-				'label' => sprintf( __( 'Open %s In New Tab', 'elementor-pro' ), $this->get_merchant_name() ),
+				'label' => sprintf( esc_html__( 'Open %s In New Tab', 'elementor-pro' ), $this->get_merchant_name() ),
 				'default' => 'yes',
-				'label_off' => __( 'No', 'elementor-pro' ),
-				'label_on' => __( 'Yes', 'elementor-pro' ),
+				'label_off' => esc_html__( 'No', 'elementor-pro' ),
+				'label_on' => esc_html__( 'Yes', 'elementor-pro' ),
 			]
 		);
 
 		$this->add_control(
 			'custom_messages',
 			[
-				'label' => __( 'Custom Messages', 'elementor-pro' ),
+				'label' => esc_html__( 'Custom Messages', 'elementor-pro' ),
 				'type' => Controls_Manager::SWITCHER,
 				'default' => '',
 			]
 		);
+
+		$this->after_custom_messages_toggle();
 
 		$error_messages = $this->get_default_error_messages();
 
 		$this->add_control(
 			'error_message_' . self::ERROR_MESSAGE_GLOBAL,
 			[
-				'label' => __( 'Error Message', 'elementor-pro' ),
+				'label' => esc_html__( 'Error Message', 'elementor-pro' ),
 				'type' => Controls_Manager::TEXT,
 				'default' => $error_messages[ self::ERROR_MESSAGE_GLOBAL ],
 				'placeholder' => $error_messages[ self::ERROR_MESSAGE_GLOBAL ],
@@ -357,13 +374,16 @@ abstract class Payment_Button extends Widget_Button {
 				'condition' => [
 					'custom_messages!' => '',
 				],
+				'dynamic' => [
+					'active' => true,
+				],
 			]
 		);
 
 		$this->add_control(
 			'error_message_' . self::ERROR_MESSAGE_PAYMENT_METHOD,
 			[
-				'label' => sprintf( __( '%s Not Connected', 'elementor-pro' ), $this->get_merchant_name() ),
+				'label' => sprintf( esc_html__( '%s Not Connected', 'elementor-pro' ), $this->get_merchant_name() ),
 				'type' => Controls_Manager::TEXT,
 				'default' => $error_messages[ self::ERROR_MESSAGE_PAYMENT_METHOD ],
 				'placeholder' => $error_messages[ self::ERROR_MESSAGE_PAYMENT_METHOD ],
@@ -371,8 +391,13 @@ abstract class Payment_Button extends Widget_Button {
 				'condition' => [
 					'custom_messages!' => '',
 				],
+				'dynamic' => [
+					'active' => true,
+				],
 			]
 		);
+
+		$this->update_error_massages();
 
 		$this->end_controls_section();
 	}
@@ -387,13 +412,6 @@ abstract class Payment_Button extends Widget_Button {
 
 		$this->remove_control( 'size' );
 
-		$this->update_control( 'selected_icon', [
-			'default' => [
-				'value' => 'fab fa-paypal',
-				'library' => 'fa-brands',
-			],
-		] );
-
 		$this->update_control( 'text', [
 			'default' => 'Buy Now',
 		] );
@@ -402,9 +420,15 @@ abstract class Payment_Button extends Widget_Button {
 			'default' => '#FFF',
 		] );
 
-		$this->update_control( 'background_color', [
-			'default' => '#032E82',
-		] );
+		$this->update_control(
+			'icon_align',
+			[
+				'options' => [
+					'left' => esc_html__( 'Before Text', 'elementor-pro' ),
+					'right' => esc_html__( 'After Text', 'elementor-pro' ),
+				],
+			]
+		);
 	}
 
 	// Add typography settings for custom messages.
@@ -412,7 +436,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->start_controls_section(
 			'section_messages_style',
 			[
-				'label' => __( 'Messages', 'elementor-pro' ),
+				'label' => esc_html__( 'Messages', 'elementor-pro' ),
 				'tab' => Controls_Manager::TAB_STYLE,
 			]
 		);
@@ -431,7 +455,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'message_color_' . self::ERROR_MESSAGE_GLOBAL,
 			[
-				'label' => __( 'Error Message Color', 'elementor-pro' ),
+				'label' => esc_html__( 'Error Message Color', 'elementor-pro' ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .elementor-message.elementor-error-message-' . self::ERROR_MESSAGE_GLOBAL => 'color: {{COLOR}};',
@@ -442,7 +466,7 @@ abstract class Payment_Button extends Widget_Button {
 		$this->add_control(
 			'message_color_' . self::ERROR_MESSAGE_PAYMENT_METHOD,
 			[
-				'label' => sprintf( __( '%s Not Connected Color', 'elementor-pro' ), $this->get_merchant_name() ),
+				'label' => sprintf( esc_html__( '%s Not Connected Color', 'elementor-pro' ), $this->get_merchant_name() ),
 				'type' => Controls_Manager::COLOR,
 				'selectors' => [
 					'{{WRAPPER}} .elementor-message.elementor-error-message-' . self::ERROR_MESSAGE_PAYMENT_METHOD => 'color: {{COLOR}};',
@@ -462,13 +486,13 @@ abstract class Payment_Button extends Widget_Button {
 	}
 
 	// Render the checkout button.
-	protected function render_button( $tag = 'a' ) {
+	protected function render_button( Widget_Base $instance = null, $tag = 'a' ) {
 		$this->add_render_attribute( 'button', 'class', 'elementor-payment-button' );
 
 		?>
-		<<?php echo $tag . ' ' . $this->get_render_attribute_string( 'button' ); ?>>
+		<<?php Utils::print_validated_html_tag( $tag ); ?> <?php $this->print_render_attribute_string( 'button' ); ?>>
 			<?php $this->render_text(); ?>
-		</<?php echo $tag; ?>>
+		</<?php Utils::print_validated_html_tag( $tag ); ?>>
 		<?php
 	}
 
@@ -493,7 +517,7 @@ abstract class Payment_Button extends Widget_Button {
 		}
 
 		?>
-		<div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
+		<div <?php $this->print_render_attribute_string( 'wrapper' ); ?>>
 			<?php $this->render_button(); ?>
 		</div>
 		<?php

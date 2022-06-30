@@ -2,7 +2,7 @@
 namespace ElementorPro\Modules\Forms\Submissions\Export;
 
 use Elementor\Core\Base\Base_Object;
-use ElementorPro\Core\Utils\Collection;
+use Elementor\Core\Utils\Collection;
 use ElementorPro\Modules\Forms\Submissions\Database\Entities\Form_Snapshot;
 use ElementorPro\Modules\Forms\Submissions\Database\Query;
 use ElementorPro\Modules\Forms\Submissions\Database\Repositories\Form_Snapshot_Repository;
@@ -74,7 +74,7 @@ class CSV_Export extends Base_Object {
 		return [
 			'id' => $this->element_id,
 			'content' => array_merge( $headers, $rows ),
-			'mimetype' => 'text/csv;charset:utf8',
+			'mimetype' => 'text/csv;charset=UTF-8',
 			'extension' => 'csv',
 			'form_label' => $this->form ? $this->form->get_label() : "({$this->element_id})",
 		];
@@ -85,13 +85,13 @@ class CSV_Export extends Base_Object {
 	 */
 	private function get_headers() {
 		$base_headers = [
-			'1_form_name' => __( 'Form Name (ID)', 'elementor-pro' ),
-			'2_id' => __( 'Submission ID', 'elementor-pro' ),
-			'3_created_at' => __( 'Created At', 'elementor-pro' ),
-			'4_user_id' => __( 'User ID', 'elementor-pro' ),
-			'5_user_agent' => __( 'User Agent', 'elementor-pro' ),
-			'6_user_ip' => __( 'User IP', 'elementor-pro' ),
-			'7_referrer' => __( 'Referrer', 'elementor-pro' ),
+			'1_form_name' => esc_html__( 'Form Name (ID)', 'elementor-pro' ),
+			'2_id' => esc_html__( 'Submission ID', 'elementor-pro' ),
+			'3_created_at' => esc_html__( 'Created At', 'elementor-pro' ),
+			'4_user_id' => esc_html__( 'User ID', 'elementor-pro' ),
+			'5_user_agent' => esc_html__( 'User Agent', 'elementor-pro' ),
+			'6_user_ip' => esc_html__( 'User IP', 'elementor-pro' ),
+			'7_referrer' => esc_html__( 'Referrer', 'elementor-pro' ),
 		];
 
 		$labels_dictionary = $this->get_form_labels_dictionary();
@@ -99,7 +99,8 @@ class CSV_Export extends Base_Object {
 		$headers = $this->values_keys
 			->map_with_keys( function ( $key ) use ( $labels_dictionary ) {
 				return [
-					$key => wp_json_encode( isset( $labels_dictionary[ $key ] ) ? $labels_dictionary[ $key ] : $key ),
+					// JSON_UNESCAPED_UNICODE - for supporting non english chars.
+					$key => wp_json_encode( isset( $labels_dictionary[ $key ] ) ? $labels_dictionary[ $key ] : $key, JSON_UNESCAPED_UNICODE ),
 				];
 			} )
 			->merge( $base_headers )
@@ -122,9 +123,11 @@ class CSV_Export extends Base_Object {
 				'2_id' => wp_json_encode( $submission['id'] ),
 				'3_created_at' => wp_json_encode( $submission['created_at'] ),
 				'4_user_id' => wp_json_encode( $submission['user_id'] ),
-				'5_user_agent' => wp_json_encode( $submission['user_agent'] ),
+				// JSON_UNESCAPED_SLASHES - Should not escape the user agent e.g: 'Mozilla/5.0 ...'
+				'5_user_agent' => wp_json_encode( $submission['user_agent'], JSON_UNESCAPED_SLASHES ),
 				'6_user_ip' => wp_json_encode( $submission['user_ip'] ),
-				'7_referrer' => wp_json_encode( $submission['referer'] ),
+				// JSON_UNESCAPED_SLASHES - should not escape the url slashes e.g: 'https://local.test/'
+				'7_referrer' => wp_json_encode( $submission['referer'], JSON_UNESCAPED_SLASHES ),
 			];
 
 			$values_dictionary = $this->get_values_dictionary( $submission['values'] );
@@ -132,7 +135,8 @@ class CSV_Export extends Base_Object {
 			$row = $this->values_keys
 				->map_with_keys( function ( $key ) use ( $values_dictionary ) {
 					return [
-						$key => wp_json_encode( isset( $values_dictionary[ $key ] ) ? $values_dictionary[ $key ] : '' ),
+						// JSON_UNESCAPED_UNICODE - for supporting non english chars.
+						$key => wp_json_encode( isset( $values_dictionary[ $key ] ) ? $values_dictionary[ $key ] : '', JSON_UNESCAPED_UNICODE ),
 					];
 				} )
 				->merge( $base_values )

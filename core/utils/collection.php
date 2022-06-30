@@ -1,103 +1,78 @@
 <?php
 namespace ElementorPro\Core\Utils;
 
-use Elementor\Core\Utils\Collection as BaseCollection;
+use \Elementor\Core\Utils\Collection as Collection_Base;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-class Collection extends BaseCollection {
-	/**
-	 * Get specific item from the collection.
-	 *
-	 * @param      $key
-	 * @param null $default
-	 *
-	 * @return mixed|null
-	 */
-	public function get( $key, $default = null ) {
-		if ( ! array_key_exists( $key, $this->items ) ) {
-			return $default;
-		}
+// TODO: Move to Core.
+class Collection extends Collection_Base implements \JsonSerializable {
 
-		return $this->items[ $key ];
+	/**
+	 * Change the items key by an item field.
+	 *
+	 * @param string $key
+	 *
+	 * @return Collection
+	 */
+	public function key_by( $key ) {
+		return $this->map_with_keys( function ( $item ) use ( $key ) {
+			return [ $item->{$key} => $item ];
+		} );
 	}
 
 	/**
-	 * Run over the collection to get specific prop from the collection item.
+	 * Flatten the items recursively.
 	 *
-	 * @param $key
-	 *
-	 * @return $this
+	 * @return array
 	 */
-	public function pluck( $key ) {
-		$result = [];
+	public function flatten_recursive() {
+		$output = [];
+		$items = $this->all();
 
-		foreach ( $this->items as $value ) {
-			if ( is_object( $value ) && isset( $value->{$key} ) ) {
-				$result[] = $value->{$key};
-			} elseif ( is_array( $value ) && isset( $value[ $key ] ) ) {
-				$result[] = $value[ $key ];
-			}
-		}
+		array_walk_recursive($items, function( $item ) use ( &$output ) {
+			$output[] = $item;
+		} );
 
-		return new static( $result );
+		return $output;
 	}
 
 	/**
-	 * Group the collection items by specific key in each collection item.
+	 * Run array_diff between the collection and other array or collection.
 	 *
-	 * @param $group_by
+	 * @param $filter
 	 *
 	 * @return $this
 	 */
-	public function group_by( $group_by ) {
-		$result = [];
-
-		foreach ( $this->items as $value ) {
-			$group_key = 0;
-
-			if ( is_object( $value ) && isset( $value->{$group_by} ) ) {
-				$group_key = $value->{$group_by};
-			} elseif ( is_array( $value ) && isset( $value[ $group_by ] ) ) {
-				$group_key = $value[ $group_by ];
-			}
-
-			$result[ $group_key ][] = $value;
+	public function diff( $filter ) {
+		if ( $filter instanceof Collection_Base ) {
+			$filter = $filter->all();
 		}
 
-		return new static( $result );
+		return new static( array_diff( $this->all(), $filter ) );
 	}
 
 	/**
+	 * Reverse the array
+	 *
+	 * @param false $preserve_keys
+	 *
 	 * @return $this
 	 */
-	public function unique() {
+	public function reverse( $preserve_keys = false ) {
 		return new static(
-			array_unique( $this->items )
+			array_reverse( $this->all(), $preserve_keys )
 		);
 	}
 
 	/**
-	 * @param null $default
+	 * Return a JSON serialized representation of the Collection.
 	 *
-	 * @return mixed|null
-	 */
-	public function first( $default = null ) {
-		if ( $this->is_empty() ) {
-			return $default;
-		}
-
-		foreach ( $this->items as $item ) {
-			return $item;
-		}
-	}
-
-	/**
 	 * @return array
 	 */
-	public function values() {
-		return array_values( $this->all() );
+	public function jsonSerialize() {
+		return $this->all();
 	}
 }

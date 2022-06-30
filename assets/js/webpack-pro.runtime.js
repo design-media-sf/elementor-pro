@@ -1,4 +1,4 @@
-/*! elementor-pro - v3.2.2 - 05-05-2021 */
+/*! elementor-pro - v3.7.2 - 15-06-2022 */
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({});
@@ -9,8 +9,9 @@
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -29,49 +30,36 @@
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = __webpack_modules__;
 /******/ 	
-/******/ 	// the startup function
-/******/ 	// It's empty as some runtime module handles the default behavior
-/******/ 	__webpack_require__.x = x => {}
 /************************************************************************/
-/******/ 	/* webpack/runtime/create fake namespace object */
+/******/ 	/* webpack/runtime/chunk loaded */
 /******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => Object.getPrototypeOf(obj) : (obj) => obj.__proto__;
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
 /******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach(key => def[key] = () => value[key]);
-/******/ 			}
-/******/ 			def['default'] = () => value;
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
+/******/ 			return result;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -93,29 +81,38 @@
 /******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames not based on template
-/******/ 			if (chunkId === "code-highlight") return "" + chunkId + ".9f87a4e2747cd21130f2.bundle.js";
-/******/ 			if (chunkId === "paypal-button") return "" + chunkId + ".9ac8fdd1db8d93856f8c.bundle.js";
-/******/ 			if (chunkId === "animated-headline") return "" + chunkId + ".e95c45b7d46e0a612b7d.bundle.js";
-/******/ 			if (chunkId === "modules_carousel_assets_js_frontend_handlers_base_js") return "f7edf46ee23c04733c35.bundle.js";
-/******/ 			if (chunkId === "media-carousel") return "" + chunkId + ".4c0492dde4e7dcd5cc9d.bundle.js";
-/******/ 			if (chunkId === "carousel") return "" + chunkId + ".bb4c8274de83e045027f.bundle.js";
-/******/ 			if (chunkId === "countdown") return "" + chunkId + ".fdb92c684b8e3ab88c82.bundle.js";
-/******/ 			if (chunkId === "form") return "form.890758b5f6f66d5a2727.bundle.js";
-/******/ 			if (chunkId === "gallery") return "" + chunkId + ".d7dd275ca3eddcfb9d65.bundle.js";
-/******/ 			if (chunkId === "lottie") return "" + chunkId + ".742f4469ba922d17ef1d.bundle.js";
-/******/ 			if (chunkId === "nav-menu") return "" + chunkId + ".dc9954b5562a6a182c99.bundle.js";
-/******/ 			if (chunkId === "popup") return "" + chunkId + ".578217b3d93e8efb2299.bundle.js";
-/******/ 			if (chunkId === "posts") return "" + chunkId + ".d74d398bbd5332eec332.bundle.js";
-/******/ 			if (chunkId === "portfolio") return "" + chunkId + ".89b8364078e0e54495a6.bundle.js";
-/******/ 			if (chunkId === "share-buttons") return "" + chunkId + ".1bf001f1c2ad8e7e3a5a.bundle.js";
-/******/ 			if (chunkId === "slides") return "" + chunkId + ".a4197378419486376c60.bundle.js";
-/******/ 			if (chunkId === "social") return "" + chunkId + ".3d098e67c2733abd1e00.bundle.js";
-/******/ 			if (chunkId === "table-of-contents") return "" + chunkId + ".c73a15dc06cc2ea59a06.bundle.js";
-/******/ 			if (chunkId === "archive-posts") return "" + chunkId + ".ad6245c6d6e01e236d1a.bundle.js";
-/******/ 			if (chunkId === "search-form") return "" + chunkId + ".d3512be4aee1d4294a3f.bundle.js";
-/******/ 			if (chunkId === "woocommerce-menu-cart") return "" + chunkId + ".3c822317e2d150bd7400.bundle.js";
+/******/ 			if (chunkId === "code-highlight") return "" + chunkId + ".025966fc6b037ea07f05.bundle.js";
+/******/ 			if (chunkId === "video-playlist") return "" + chunkId + ".1aa3281934eb1be42914.bundle.js";
+/******/ 			if (chunkId === "paypal-button") return "" + chunkId + ".35291ad27cdc2a8a7921.bundle.js";
+/******/ 			if (chunkId === "stripe-button") return "" + chunkId + ".3c4e82ad4f8635e44542.bundle.js";
+/******/ 			if (chunkId === "progress-tracker") return "" + chunkId + ".d38557a8e9be0c7ac097.bundle.js";
+/******/ 			if (chunkId === "animated-headline") return "" + chunkId + ".4d4d3c90102df0feeeb4.bundle.js";
+/******/ 			if (chunkId === "media-carousel") return "" + chunkId + ".e3ec0e8809948259690d.bundle.js";
+/******/ 			if (chunkId === "carousel") return "" + chunkId + ".ec49ae64da497d8adeee.bundle.js";
+/******/ 			if (chunkId === "countdown") return "" + chunkId + ".486737044795b3a87ad3.bundle.js";
+/******/ 			if (chunkId === "hotspot") return "" + chunkId + ".7a26a87c29a1cd99ebc4.bundle.js";
+/******/ 			if (chunkId === "form") return "form.e231ef9f8b852ecaa4d3.bundle.js";
+/******/ 			if (chunkId === "gallery") return "" + chunkId + ".ab76804bbe6e9657fa8b.bundle.js";
+/******/ 			if (chunkId === "lottie") return "" + chunkId + ".68b160acb16985899f6c.bundle.js";
+/******/ 			if (chunkId === "nav-menu") return "" + chunkId + ".344ae9625cf591e355d9.bundle.js";
+/******/ 			if (chunkId === "popup") return "" + chunkId + ".1e0f0af4c386170080a9.bundle.js";
+/******/ 			if (chunkId === "load-more") return "" + chunkId + ".fec6d8e0469ce9de4c2e.bundle.js";
+/******/ 			if (chunkId === "posts") return "" + chunkId + ".088a95f657e27386e013.bundle.js";
+/******/ 			if (chunkId === "portfolio") return "" + chunkId + ".71a295881db9bf336b34.bundle.js";
+/******/ 			if (chunkId === "share-buttons") return "" + chunkId + ".d46ad1a7ae4811ddf539.bundle.js";
+/******/ 			if (chunkId === "slides") return "" + chunkId + ".c147fd1a583874a5c204.bundle.js";
+/******/ 			if (chunkId === "social") return "" + chunkId + ".1c34ab246a4f2f971eb3.bundle.js";
+/******/ 			if (chunkId === "table-of-contents") return "" + chunkId + ".04aedbfe66f61e99e535.bundle.js";
+/******/ 			if (chunkId === "archive-posts") return "" + chunkId + ".9298f3dd8f2722909f33.bundle.js";
+/******/ 			if (chunkId === "search-form") return "" + chunkId + ".2a7313a0f793c51489e5.bundle.js";
+/******/ 			if (chunkId === "woocommerce-menu-cart") return "" + chunkId + ".3dd7c3f10f39d618076a.bundle.js";
+/******/ 			if (chunkId === "woocommerce-purchase-summary") return "" + chunkId + ".d052d7d713baf4381542.bundle.js";
+/******/ 			if (chunkId === "woocommerce-checkout-page") return "" + chunkId + ".f8efa8ea5086f53925da.bundle.js";
+/******/ 			if (chunkId === "woocommerce-cart") return "" + chunkId + ".e2b26d683c4de1ac5aff.bundle.js";
+/******/ 			if (chunkId === "woocommerce-my-account") return "" + chunkId + ".44bbb4dd4591f0c43079.bundle.js";
+/******/ 			if (chunkId === "woocommerce-notices") return "" + chunkId + ".7acc357dab73c74f532c.bundle.js";
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + chunkId + ".js";
+/******/ 			return undefined;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -133,7 +130,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/load script */
@@ -141,7 +138,7 @@
 /******/ 		var inProgress = {};
 /******/ 		var dataWebpackPrefix = "elementor-pro:";
 /******/ 		// loadScript function to load a script via script tag
-/******/ 		__webpack_require__.l = (url, done, key) => {
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
 /******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
 /******/ 			var script, needAttach;
 /******/ 			if(key !== undefined) {
@@ -171,7 +168,7 @@
 /******/ 				var doneFns = inProgress[url];
 /******/ 				delete inProgress[url];
 /******/ 				script.parentNode && script.parentNode.removeChild(script);
-/******/ 				doneFns && doneFns.forEach((fn) => fn(event));
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
 /******/ 				if(prev) return prev(event);
 /******/ 			}
 /******/ 			;
@@ -179,17 +176,6 @@
 /******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
 /******/ 			script.onload = onScriptComplete.bind(null, script.onload);
 /******/ 			needAttach && document.head.appendChild(script);
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -219,14 +205,11 @@
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 		// Promise = chunk loading, 0 = chunk loaded
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
 /******/ 			"webpack-pro.runtime": 0
 /******/ 		};
 /******/ 		
-/******/ 		var deferredModules = [
-/******/ 		
-/******/ 		];
 /******/ 		__webpack_require__.f.j = (chunkId, promises) => {
 /******/ 				// JSONP chunk loading for javascript
 /******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
@@ -236,11 +219,9 @@
 /******/ 					if(installedChunkData) {
 /******/ 						promises.push(installedChunkData[2]);
 /******/ 					} else {
-/******/ 						if(true) { // all chunks have JS
+/******/ 						if("webpack-pro.runtime" != chunkId) {
 /******/ 							// setup Promise in chunk cache
-/******/ 							var promise = new Promise((resolve, reject) => {
-/******/ 								installedChunkData = installedChunks[chunkId] = [resolve, reject];
-/******/ 							});
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
 /******/ 							promises.push(installedChunkData[2] = promise);
 /******/ 		
 /******/ 							// start chunk loading
@@ -262,7 +243,7 @@
 /******/ 									}
 /******/ 								}
 /******/ 							};
-/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId);
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
 /******/ 						} else installedChunks[chunkId] = 0;
 /******/ 					}
 /******/ 				}
@@ -276,74 +257,41 @@
 /******/ 		
 /******/ 		// no HMR manifest
 /******/ 		
-/******/ 		var checkDeferredModules = x => {};
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
 /******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime, executeModules] = data;
+/******/ 			var [chunkIds, moreModules, runtime] = data;
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
-/******/ 			var moduleId, chunkId, i = 0, resolves = [];
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
 /******/ 			for(;i < chunkIds.length; i++) {
 /******/ 				chunkId = chunkIds[i];
 /******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 					resolves.push(installedChunks[chunkId][0]);
+/******/ 					installedChunks[chunkId][0]();
 /******/ 				}
 /******/ 				installedChunks[chunkId] = 0;
 /******/ 			}
-/******/ 			for(moduleId in moreModules) {
-/******/ 				if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
-/******/ 				}
-/******/ 			}
-/******/ 			if(runtime) runtime(__webpack_require__);
-/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
-/******/ 			while(resolves.length) {
-/******/ 				resolves.shift()();
-/******/ 			}
-/******/ 		
-/******/ 			// add entry modules from loaded chunk to deferred list
-/******/ 			if(executeModules) deferredModules.push.apply(deferredModules, executeModules);
-/******/ 		
-/******/ 			// run deferred modules when all chunks ready
-/******/ 			return checkDeferredModules();
+/******/ 			return __webpack_require__.O(result);
 /******/ 		}
 /******/ 		
 /******/ 		var chunkLoadingGlobal = self["webpackChunkelementor_pro"] = self["webpackChunkelementor_pro"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 		
-/******/ 		function checkDeferredModulesImpl() {
-/******/ 			var result;
-/******/ 			for(var i = 0; i < deferredModules.length; i++) {
-/******/ 				var deferredModule = deferredModules[i];
-/******/ 				var fulfilled = true;
-/******/ 				for(var j = 1; j < deferredModule.length; j++) {
-/******/ 					var depId = deferredModule[j];
-/******/ 					if(installedChunks[depId] !== 0) fulfilled = false;
-/******/ 				}
-/******/ 				if(fulfilled) {
-/******/ 					deferredModules.splice(i--, 1);
-/******/ 					result = __webpack_require__(__webpack_require__.s = deferredModule[0]);
-/******/ 				}
-/******/ 			}
-/******/ 			if(deferredModules.length === 0) {
-/******/ 				__webpack_require__.x();
-/******/ 				__webpack_require__.x = x => {};
-/******/ 			}
-/******/ 			return result;
-/******/ 		}
-/******/ 		var startup = __webpack_require__.x;
-/******/ 		__webpack_require__.x = () => {
-/******/ 			// reset startup function so it can be called again when more startup code is added
-/******/ 			__webpack_require__.x = startup || (x => {});
-/******/ 			return (checkDeferredModules = checkDeferredModulesImpl)();
-/******/ 		};
 /******/ 	})();
 /******/ 	
 /************************************************************************/
-/******/ 	// run startup
-/******/ 	return __webpack_require__.x();
+/******/ 	
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=webpack-pro.runtime.js.map
